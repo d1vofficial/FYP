@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block main %}
+<!-- Modal -->
+
+
+<div class="container pt-5">
+    <div class="row justify-content-md-center">
+        <div class="col-sm-7">
+            <h1>Metal Surface Defect Prediction</h1>
+            <form action="" id="post-form" class="mt-5">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="image_input">Please input the image of the required surface :</label> <br>
+                    <input type="file"
+                        id="image_input" name="avatar"
+                        accept="image/*" required>
+                </div>
+                <!-- <div class="form-group">
+                    <label for="Sepal Width">Sepal Width</label>
+                    <input type="number" step="0.1" class="form-control" id="sepal_width" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="petal_length">Petal Length</label>
+                    <input type="number" step="0.1" class="form-control" id="petal_length" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="petal_width">Petal Width</label>
+                    <input type="number" step="0.1" class="form-control" id="petal_width" placeholder="" required>
+                </div> -->
+                
+                <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
+            </form>
+            <div id="prediction"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('submit', '#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "predict:submit_prediction" %}',
+            data:{
+                image_input:$('#image_input').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success:function(json) {
+                document.forms["post-form"].reset();
+                document.getElementById("prediction").innerHTML = json['result']
+                
+            },
+            error : function(xhr,errmsg,err) {
+
+            }
+        });
+
+        console.log($('#image_input').val())
+    })
+</script>
+
+
+
+{% endblock %}
